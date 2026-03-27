@@ -85,7 +85,7 @@ async function loadListings() {
     if (!error && data && data.length > 0) {
       allListings = data;
       const term = searchInput?.value || '';
-      const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
+      const activeCategory = new URLSearchParams(window.location.search).get('category') || 'all';
       renderListings(allListings, term, activeCategory);
     }
     /* If empty or error, fallback stays shown */
