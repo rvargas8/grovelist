@@ -304,6 +304,9 @@ p { margin: 0 0 var(--spacing-sm); max-width: var(--measure); }
   gap: var(--spacing-sm);
 }
 .category-btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   min-height: var(--tap-min);
   padding: 0 var(--spacing-md);
   font-family: var(--font-body);

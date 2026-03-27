@@ -222,33 +222,18 @@ document.getElementById('aboutScrollBtn')?.addEventListener('click', () => {
   if (cards) cards.scrollBy({ left: 300, behavior: 'smooth' });
 });
 
-/* Category filter — updates URL so links are shareable */
-categoryBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const category = btn.dataset.category || 'all';
-    const url = new URL(window.location.href);
-    if (category === 'all') {
-      url.searchParams.delete('category');
-    } else {
-      url.searchParams.set('category', category);
-    }
-    window.history.pushState({}, '', url);
-    categoryBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const term = searchInput?.value || '';
-    renderListings(allListings, term, category);
-  });
-});
-
-/* On load: apply category from URL if present */
+/* On load: highlight the active category link based on URL */
 function applyCategoryFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const cat = params.get('category');
-  if (!cat) return;
+  const cat = params.get('category') || 'all';
   categoryBtns.forEach(btn => {
-    const match = btn.dataset.category === cat;
-    btn.classList.toggle('active', match);
+    btn.classList.toggle('active', btn.dataset.category === cat);
   });
+  /* Update the section heading to reflect the active category */
+  const heading = document.querySelector('.listings-heading');
+  if (heading && cat !== 'all') {
+    heading.textContent = cat;
+  }
 }
 applyCategoryFromUrl();
 
