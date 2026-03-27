@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | The Grove List</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <style>
+    .error-page { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: var(--spacing-2xl) var(--spacing-lg); }
+    .error-content { text-align: center; }
+    .error-code { font-size: 4rem; color: var(--color-text-muted); margin-bottom: var(--spacing-sm); }
+    .error-message { margin-bottom: var(--spacing-lg); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" style="color: inherit; text-decoration: none;">
+        <div class="header-logo-title">
+          <img src="orange.png" alt="orange grove icon" class="header-logo" width="210" height="140">
+          <h1 class="site-title">The Grove List</h1>
+        </div>
+      </a>
+      <p class="site-tagline">Your official guide to small businesses in Southshore</p>
+      <a href="index.html#list-your-business" class="header-cta">Add Your Business</a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="error-page">
+      <div class="container">
+        <div class="error-content">
+          <p class="error-code">404</p>
+          <h2 class="error-message">Page not found</h2>
+          <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-lg);">The page you're looking for doesn't exist or has been moved.</p>
+          <a href="index.html" class="header-cta">Back to The Grove List</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>The Grove List · Southern Hillsborough County, Florida</p>
+    </div>
+  </footer>
+</body>
+</html>

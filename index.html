@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "The Grove List",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Southern Hillsborough County",
+      "addressRegion": "FL",
+      "addressCountry": "US"
+    },
+    "email": "vargas.ricardo51@gmail.com"
+  }
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Grove List — your official guide to local businesses in Southern Hillsborough County, Florida. Find trusted shops, restaurants, and services.">
+  <meta property="og:title" content="The Grove List | Southern Hillsborough County">
+  <meta property="og:description" content="Your official guide to local businesses in Southern Hillsborough County, Florida.">
+  <meta property="og:type" content="website">
+  <title>The Grove List | Southern Hillsborough County</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=7">
+  <!-- Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID from analytics.google.com -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="header-logo-title">
+        <img src="orange.png" alt="orange grove icon" class="header-logo" width="210" height="140">
+        <h1 class="site-title">The Grove List</h1>
+      </div>
+      <p class="site-tagline">Your official guide to small businesses in Southshore</p>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="search-section" aria-label="Search businesses">
+      <div class="container">
+        <p class="search-label">Find a local business</p>
+        <form class="search-form" role="search" id="searchForm">
+          <label for="searchInput" class="sr-only">Search businesses by name or description</label>
+          <div class="search-pill">
+            <input
+              type="search"
+              id="searchInput"
+              name="q"
+              class="search-input"
+              placeholder="Search businesses..."
+              aria-label="Search businesses by name or description"
+              autocomplete="off"
+            >
+            <button type="submit" class="search-button">
+              <span class="search-button-text">Search</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="filters-section" aria-label="Filter by category">
+      <div class="container">
+        <h2 class="filters-heading">Browse by category</h2>
+        <div class="category-buttons" role="group" aria-label="Category filter buttons">
+          <button type="button" class="category-btn active" data-category="all">All</button>
+          <button type="button" class="category-btn" data-category="Restaurant">Restaurant</button>
+          <button type="button" class="category-btn" data-category="Retail">Retail</button>
+          <button type="button" class="category-btn" data-category="Service">Service</button>
+          <button type="button" class="category-btn" data-category="Sports">Sports</button>
+          <button type="button" class="category-btn" data-category="Health">Health</button>
+          <button type="button" class="category-btn" data-category="Other">Other</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="listings-section" aria-label="Business listings">
+      <div class="container">
+        <h2 class="listings-heading">Around the Grove</h2>
+        <p id="listingsCount" class="listings-count" aria-live="polite">6 businesses found</p>
+        <div id="listingsGrid" class="listings-sections">
+          <div class="listings-section-group">
+            <h3 class="section-label">Our Picks</h3>
+            <div class="listings-grid">
+              <article class="listing-card featured" id="listing-rello-runs">
+                <p class="card-category">Sports</p>
+                <span class="grove-pick-badge">Grove Pick</span>
+                <h3 class="card-name">Rello Runs Academy</h3>
+                <p class="card-grove-note">The kind of place where kids learn more than layups.</p>
+                <p class="card-description">Basketball academy focused on faith, teamwork, and encouragement. Expert coaching, private training, homeschool P.E., camps, and 3v3 leagues for young athletes in Riverview.</p>
+                <p class="card-phone"><span class="card-placeholder">—</span></p>
+                <p class="card-website"><a href="https://relloruns.com" class="card-link card-website-link" target="_blank" rel="noopener">relloruns.com</a></p>
+              </article>
+              <article class="listing-card featured" id="listing-italian-kitchen">
+                <p class="card-category">Restaurant</p>
+                <span class="grove-pick-badge">Grove Pick</span>
+                <h3 class="card-name">Italian Kitchen Grill & Cafe</h3>
+                <p class="card-grove-note">Homemade pasta and Mediterranean flavors. Great for family dinner.</p>
+                <p class="card-description">Fresh homemade Italian cuisine in Riverview. Stone oven baked pastas, seafood risotto, specialty dishes from Sicily to Florence. Family-friendly, wine menu, pickup and delivery.</p>
+                <p class="card-phone"><a href="tel:+18136710953" class="card-link">(813) 671-0953</a></p>
+                <p class="card-website"><a href="https://italiankitchencafe.com" class="card-link card-website-link" target="_blank" rel="noopener">italiankitchencafe.com</a></p>
+              </article>
+              <article class="listing-card featured" id="listing-beauty-doctors">
+                <p class="card-category">Health</p>
+                <span class="grove-pick-badge">Grove Pick</span>
+                <h3 class="card-name">The Beauty Doctors</h3>
+                <p class="card-grove-note">Expert care in a welcoming, local setting.</p>
+                <p class="card-description">Medical aesthetics and beauty services in Gibsonton. Skincare, injectables, and treatments from experienced practitioners who know the community.</p>
+                <p class="card-phone"><a href="tel:8137315298" class="card-link">(813) 731-5298</a></p>
+                <p class="card-website"><a href="https://thebeautydoctorsflorida.com" class="card-link card-website-link" target="_blank" rel="noopener">thebeautydoctorsflorida.com</a></p>
+              </article>
+              <article class="listing-card featured">
+                <p class="card-category">Sports</p>
+                <span class="grove-pick-badge">Grove Pick</span>
+                <h3 class="card-name">Apollo Beach Racquet and Fitness Club</h3>
+                <p class="card-grove-note">Where the community comes to play.</p>
+                <p class="card-description">Tennis and pickleball in Apollo Beach. Courts, lessons, clinics, and social play for all ages and skill levels.</p>
+                <p class="card-phone"><a href="tel:+18136411922" class="card-link">(813) 641-1922</a></p>
+                <p class="card-website"><a href="https://www.abrfc.com" class="card-link card-website-link" target="_blank" rel="noopener">abrfc.com</a></p>
+              </article>
+            </div>
+          </div>
+          <div class="listings-section-group">
+            <h3 class="section-label">Worth Discovering</h3>
+            <div class="listings-grid">
+              <article class="listing-card">
+                <p class="card-category">Retail</p>
+                <h3 class="card-name">Riverview Ace Hardware</h3>
+                <p class="card-description">Local hardware store with paint, tools, lawn care, and friendly advice. Your one-stop shop for home improvement.</p>
+                <p class="card-phone"><a href="tel:+18135553030" class="card-link">(813) 555-3030</a></p>
+                <p class="card-website"><span class="card-placeholder">—</span></p>
+              </article>
+              <article class="listing-card">
+                <p class="card-category">Service</p>
+                <h3 class="card-name">Sunshine Pool Service</h3>
+                <p class="card-description">Professional pool cleaning, repair, and maintenance for residential and commercial clients across Southern Hillsborough.</p>
+                <p class="card-phone"><a href="tel:+18135554040" class="card-link">(813) 555-4040</a></p>
+                <p class="card-website"><span class="card-placeholder">—</span></p>
+              </article>
+              <article class="listing-card">
+                <p class="card-category">Restaurant</p>
+                <h3 class="card-name">Mama's Italian Kitchen</h3>
+                <p class="card-description">Authentic Italian cuisine in a warm, family atmosphere. Pasta, pizza, and fresh ingredients since 1998.</p>
+                <p class="card-phone"><a href="tel:+18135555050" class="card-link">(813) 555-5050</a></p>
+                <p class="card-website"><span class="card-placeholder">—</span></p>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div id="emptyState" class="empty-state hidden">
+          <p class="empty-state-msg">No businesses match your search.</p>
+          <button class="empty-state-clear" id="clearSearchBtn" type="button">Clear search</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="new-mover-section" aria-label="New to the area">
+      <div class="container">
+        <p class="new-mover-eyebrow">New to the Southshore area?</p>
+        <p class="new-mover-body">Whether you just moved to Riverview, Apollo Beach, or anywhere in between — The Grove List is your shortcut to the local spots worth knowing. Every business here is personally reviewed. No paid placements, no guesswork.</p>
+      </div>
+    </section>
+
+    <section class="about-section" id="about-section" aria-label="About The Grove List">
+      <div class="container">
+        <div class="about-header">
+          <span class="about-accent" aria-hidden="true"></span>
+          <h2 class="about-heading">About The Grove List</h2>
+          <button type="button" class="about-scroll-btn" id="aboutScrollBtn" aria-label="Scroll cards right" title="See more">
+            <span class="about-scroll-arrow" aria-hidden="true">›</span>
+          </button>
+        </div>
+        <div class="about-cards" id="aboutCards" role="list">
+          <article class="about-card" role="listitem">
+            <h3 class="about-card-title">What is a Grove Pick?</h3>
+            <p class="about-card-desc">Our curated favorites. Local spots we'd genuinely recommend to a neighbor — not ads, not paid placements. If it's marked Grove Pick, we've vouched for it.</p>
+          </article>
+          <a href="how-we-add-business.html" class="about-card about-card--link" role="listitem">
+            <h3 class="about-card-title">How We Add Businesses</h3>
+            <p class="about-card-desc">No forms, no fees. Just reach out and we'll list you within 24 hours. We'd rather have real businesses than an empty directory.</p>
+            <span class="about-card-more">Learn more →</span>
+          </a>
+          <a href="why-local.html" class="about-card about-card--link" role="listitem">
+            <h3 class="about-card-title">Why Local?</h3>
+            <p class="about-card-desc">Chains have big marketing budgets. Your local dentist, BBQ joint, and basketball coach don't. We're trying to level the field a little.</p>
+            <span class="about-card-more">Learn more →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="list-your-business" aria-label="List your business">
+      <div class="container">
+        <h2 class="contact-heading">List Your Business</h2>
+        <p class="contact-intro">Got a business in the area? We'll get you listed within 24 hours — no forms, no fees, just a quick message.</p>
+        <p class="contact-learn-more">
+          <a href="how-we-add-business.html" class="card-link card-website-link">Learn how we add businesses →</a>
+        </p>
+        <div class="contact-buttons">
+          <a href="#" class="contact-btn contact-btn-email" data-email-user="vargas.ricardo51" data-email-domain="gmail.com">Email Us</a>
+          <a href="https://wa.me/18136190715" class="contact-btn contact-btn-whatsapp" target="_blank" rel="noopener">WhatsApp Us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>The Grove List · Southern Hillsborough County, Florida</p>
+    </div>
+  </footer>
+  <div class="site-footer-print">
+    <p>The Grove List — thegrovelist.com · Southern Hillsborough County, Florida</p>
+  </div>
+
+  <!-- Cookie consent banner -->
+  <div id="cookieBanner" class="cookie-banner hidden" role="dialog" aria-label="Cookie notice">
+    <p class="cookie-text">This site uses cookies for analytics (Google Analytics). By continuing, you agree to our use of cookies.</p>
+    <button id="cookieAccept" class="cookie-btn" type="button">Got it</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=7"></script>
+</body>
+</html>
