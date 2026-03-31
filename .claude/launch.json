@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "directory-site",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "4321", "/Users/admin/Desktop/grovelist"],
+      "port": 4321
+    }
+  ]
+}

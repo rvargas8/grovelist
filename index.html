@@ -23,12 +23,14 @@
   <meta property="og:title" content="The Grove List | Southern Hillsborough County">
   <meta property="og:description" content="Your official guide to local businesses in Southern Hillsborough County, Florida.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://thegrovelist.com/orange.png">
+  <meta property="og:url" content="https://thegrovelist.com">
   <title>The Grove List | Southern Hillsborough County</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
   <!-- Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID from analytics.google.com -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   <script>
@@ -77,13 +79,13 @@
       <div class="container">
         <h2 class="filters-heading">Browse by category</h2>
         <div class="category-buttons" role="group" aria-label="Category filter buttons">
-          <a href="/" class="category-btn" data-category="all">All</a>
-          <a href="?category=Restaurant" class="category-btn" data-category="Restaurant">Restaurant</a>
-          <a href="?category=Retail" class="category-btn" data-category="Retail">Retail</a>
-          <a href="?category=Service" class="category-btn" data-category="Service">Service</a>
-          <a href="?category=Sports" class="category-btn" data-category="Sports">Sports</a>
-          <a href="?category=Health" class="category-btn" data-category="Health">Health</a>
-          <a href="?category=Other" class="category-btn" data-category="Other">Other</a>
+          <a href="/" class="category-btn active" data-category="all">All</a>
+          <a href="restaurant.html" class="category-btn" data-category="Restaurant">Restaurant</a>
+          <a href="retail.html" class="category-btn" data-category="Retail">Retail</a>
+          <a href="service.html" class="category-btn" data-category="Service">Service</a>
+          <a href="sports.html" class="category-btn" data-category="Sports">Sports</a>
+          <a href="health.html" class="category-btn" data-category="Health">Health</a>
+          <a href="other.html" class="category-btn" data-category="Other">Other</a>
         </div>
       </div>
     </section>
@@ -91,7 +93,7 @@
     <section class="listings-section" aria-label="Business listings">
       <div class="container">
         <h2 class="listings-heading">Around the Grove</h2>
-        <p id="listingsCount" class="listings-count" aria-live="polite">6 businesses found</p>
+        <p id="listingsCount" class="listings-count" aria-live="polite">5 businesses found</p>
         <div id="listingsGrid" class="listings-sections">
           <div class="listings-section-group">
             <h3 class="section-label">Our Picks</h3>
@@ -138,25 +140,11 @@
             <h3 class="section-label">Worth Discovering</h3>
             <div class="listings-grid">
               <article class="listing-card">
-                <p class="card-category">Retail</p>
-                <h3 class="card-name">Riverview Ace Hardware</h3>
-                <p class="card-description">Local hardware store with paint, tools, lawn care, and friendly advice. Your one-stop shop for home improvement.</p>
-                <p class="card-phone"><a href="tel:+18135553030" class="card-link">(813) 555-3030</a></p>
-                <p class="card-website"><span class="card-placeholder">—</span></p>
-              </article>
-              <article class="listing-card">
                 <p class="card-category">Service</p>
-                <h3 class="card-name">Sunshine Pool Service</h3>
-                <p class="card-description">Professional pool cleaning, repair, and maintenance for residential and commercial clients across Southern Hillsborough.</p>
-                <p class="card-phone"><a href="tel:+18135554040" class="card-link">(813) 555-4040</a></p>
-                <p class="card-website"><span class="card-placeholder">—</span></p>
-              </article>
-              <article class="listing-card">
-                <p class="card-category">Restaurant</p>
-                <h3 class="card-name">Mama's Italian Kitchen</h3>
-                <p class="card-description">Authentic Italian cuisine in a warm, family atmosphere. Pasta, pizza, and fresh ingredients since 1998.</p>
-                <p class="card-phone"><a href="tel:+18135555050" class="card-link">(813) 555-5050</a></p>
-                <p class="card-website"><span class="card-placeholder">—</span></p>
+                <h3 class="card-name">Tampa Bay Shine</h3>
+                <p class="card-description">Professional residential and commercial cleaning serving Southern Hillsborough County. House cleaning, deep cleaning, move-in/move-out, Airbnb turnovers, office cleaning, and window cleaning. All 5-star reviews.</p>
+                <p class="card-phone"><span class="card-placeholder">—</span></p>
+                <p class="card-website"><a href="https://tampabayshine.com" class="card-link card-website-link" target="_blank" rel="noopener">tampabayshine.com</a></p>
               </article>
             </div>
           </div>
@@ -234,6 +222,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

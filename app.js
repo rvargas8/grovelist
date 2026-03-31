@@ -62,6 +62,8 @@ const FALLBACK_LISTINGS = [
 
 /* State */
 let allListings = [...FALLBACK_LISTINGS];
+let _suggestionsEl = null;
+let _activeSuggestionIdx = -1;
 
 /* DOM */
 const listingsGrid = document.getElementById('listingsGrid');
@@ -71,11 +73,16 @@ const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 const categoryBtns = document.querySelectorAll('.category-btn');
 
+/* Current page category — set by category pages via window.PAGE_CATEGORY, else 'all' */
+function getCurrentCategory() {
+  return window.PAGE_CATEGORY || 'all';
+}
+
 /* Fetch listings from Supabase (source of truth).
    Shows fallback immediately so there's never a blank state. */
 async function loadListings() {
-  const urlCat = new URLSearchParams(window.location.search).get('category') || 'all';
-  renderListings(allListings, '', urlCat); /* show fallback immediately */
+  const cat = getCurrentCategory();
+  renderListings(allListings, '', cat); /* show fallback immediately */
   if (!supabase) return;
   try {
     const { data, error } = await supabase
@@ -85,8 +92,7 @@ async function loadListings() {
     if (!error && data && data.length > 0) {
       allListings = data;
       const term = searchInput?.value || '';
-      const activeCategory = new URLSearchParams(window.location.search).get('category') || 'all';
-      renderListings(allListings, term, activeCategory);
+      renderListings(allListings, term, getCurrentCategory());
     }
     /* If empty or error, fallback stays shown */
   } catch (e) {
@@ -122,10 +128,7 @@ function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
     if (clearBtn) {
       clearBtn.onclick = () => {
         if (searchInput) { searchInput.value = ''; searchInput.focus(); }
-        searchTerm = '';
-        activeCategory = 'All';
-        document.querySelectorAll('.category-btn').forEach(b => b.classList.toggle('active', b.dataset.category === 'All'));
-        renderListings();
+        renderListings(allListings, '', getCurrentCategory());
       };
     }
   }
@@ -198,9 +201,8 @@ function safeId(id) {
 /* Search */
 searchForm?.addEventListener('submit', (e) => {
   e.preventDefault();
-  const term = searchInput.value || '';
-  const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
-  renderListings(allListings, term, activeCategory);
+  hideSuggestions();
+  renderListings(allListings, searchInput.value || '', getCurrentCategory());
 });
 
 function debounce(fn, ms) {
@@ -212,9 +214,127 @@ function debounce(fn, ms) {
 }
 searchInput?.addEventListener('input', debounce(() => {
   const term = searchInput.value || '';
-  const activeCategory = document.querySelector('.category-btn.active')?.dataset.category || 'all';
-  renderListings(allListings, term, activeCategory);
-}, 250));
+  renderListings(allListings, term, getCurrentCategory());
+  showSuggestions(term);
+}, 200));
+
+/* Autocomplete dropdown */
+function initSearchDropdown() {
+  if (!searchInput) return;
+  const pill = searchInput.closest('.search-pill');
+  if (!pill) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'search-input-wrapper';
+  pill.parentNode.insertBefore(wrapper, pill);
+  wrapper.appendChild(pill);
+
+  const dropdown = document.createElement('ul');
+  dropdown.id = 'searchSuggestions';
+  dropdown.className = 'search-suggestions hidden';
+  dropdown.setAttribute('role', 'listbox');
+  dropdown.setAttribute('aria-label', 'Search suggestions');
+  wrapper.appendChild(dropdown);
+  _suggestionsEl = dropdown;
+
+  document.addEventListener('click', (e) => {
+    if (!wrapper.contains(e.target)) hideSuggestions();
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    const items = _suggestionsEl ? _suggestionsEl.querySelectorAll('.search-suggestion-item') : [];
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      _activeSuggestionIdx = Math.min(_activeSuggestionIdx + 1, items.length - 1);
+      updateActiveSuggestion(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      _activeSuggestionIdx = Math.max(_activeSuggestionIdx - 1, -1);
+      updateActiveSuggestion(items);
+    } else if (e.key === 'Enter' && _activeSuggestionIdx >= 0 && items[_activeSuggestionIdx]) {
+      e.preventDefault();
+      items[_activeSuggestionIdx].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    } else if (e.key === 'Escape') {
+      hideSuggestions();
+    }
+  });
+}
+
+function updateActiveSuggestion(items) {
+  items.forEach((item, i) => {
+    item.setAttribute('aria-selected', i === _activeSuggestionIdx ? 'true' : 'false');
+  });
+}
+
+function hideSuggestions() {
+  if (_suggestionsEl) _suggestionsEl.classList.add('hidden');
+  _activeSuggestionIdx = -1;
+}
+
+function showSuggestions(term) {
+  if (!_suggestionsEl) return;
+  _activeSuggestionIdx = -1;
+
+  if (!term || !term.trim()) {
+    hideSuggestions();
+    return;
+  }
+
+  const q = term.trim().toLowerCase();
+  const cat = getCurrentCategory();
+  const matches = allListings
+    .filter(l => {
+      if (cat !== 'all' && l.category !== cat) return false;
+      return (
+        (l.name || '').toLowerCase().includes(q) ||
+        (l.category || '').toLowerCase().includes(q) ||
+        (l.description || '').toLowerCase().includes(q)
+      );
+    })
+    .slice(0, 7);
+
+  if (!matches.length) {
+    hideSuggestions();
+    return;
+  }
+
+  _suggestionsEl.innerHTML = matches.map(l => `
+    <li class="search-suggestion-item" role="option" aria-selected="false" data-id="${escapeHtml(safeId(l.id))}">
+      <span class="suggestion-name">${highlightMatch(l.name, q)}</span>
+      <span class="suggestion-category">${escapeHtml(l.category || '')}</span>
+    </li>
+  `).join('');
+
+  _suggestionsEl.querySelectorAll('.search-suggestion-item').forEach(item => {
+    item.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const listing = allListings.find(l => safeId(l.id) === item.dataset.id);
+      if (listing) {
+        searchInput.value = listing.name;
+        hideSuggestions();
+        renderListings(allListings, listing.name, getCurrentCategory());
+        const card = document.getElementById(`listing-${safeId(listing.id)}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  _suggestionsEl.classList.remove('hidden');
+}
+
+function highlightMatch(text, q) {
+  if (!text) return '';
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return escapeHtml(text);
+  return (
+    escapeHtml(text.slice(0, idx)) +
+    '<mark class="suggestion-highlight">' +
+    escapeHtml(text.slice(idx, idx + q.length)) +
+    '</mark>' +
+    escapeHtml(text.slice(idx + q.length))
+  );
+}
 
 /* About section scroll */
 document.getElementById('aboutScrollBtn')?.addEventListener('click', () => {
@@ -222,20 +342,18 @@ document.getElementById('aboutScrollBtn')?.addEventListener('click', () => {
   if (cards) cards.scrollBy({ left: 300, behavior: 'smooth' });
 });
 
-/* On load: highlight the active category link based on URL */
-function applyCategoryFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const cat = params.get('category') || 'all';
+/* On load: highlight the active category button */
+function applyActiveCategory() {
+  const cat = getCurrentCategory();
   categoryBtns.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.category === cat);
   });
-  /* Update the section heading to reflect the active category */
   const heading = document.querySelector('.listings-heading');
-  if (heading && cat !== 'all') {
-    heading.textContent = cat;
+  if (heading) {
+    heading.textContent = cat === 'all' ? 'Around the Grove' : cat;
   }
 }
-applyCategoryFromUrl();
+applyActiveCategory();
 
 /* Email obfuscation: build mailto from data attributes to deter scrapers */
 document.querySelectorAll('[data-email-user][data-email-domain]').forEach(el => {
@@ -254,4 +372,5 @@ document.querySelectorAll('[data-email-user][data-email-domain]').forEach(el => 
   });
 })();
 
+initSearchDropdown();
 loadListings();
