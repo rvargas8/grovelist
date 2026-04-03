@@ -327,6 +327,73 @@
     }
     .sub-btn-danger:hover:not(:disabled) { background: #fef2f0; }
 
+    /* Add business form */
+    .add-biz-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      max-width: 580px;
+    }
+    .add-biz-heading {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 0 0 0.3rem;
+    }
+    .add-biz-sub {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: #8a8278;
+      margin: 0 0 1.5rem;
+    }
+    .add-biz-error {
+      background: #fef2f0;
+      border: 1.5px solid #e87a6a;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: #9b2c1a;
+      margin-bottom: 1rem;
+    }
+    .add-biz-success {
+      background: #f0faf3;
+      border: 1.5px solid #6dbf8a;
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: #1f6b3a;
+      margin-bottom: 1rem;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+    .form-required { color: var(--color-accent); margin-left: 2px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; box-sizing: border-box;
+      font-family: var(--font-body); font-size: 0.95rem; color: var(--color-text);
+      background: #faf9f7; border: 1.5px solid var(--color-border);
+      border-radius: var(--radius); padding: 0.6rem 0.8rem;
+      outline: none; transition: border-color 0.15s; -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--color-accent); background: #fff; }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23bf5a38' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.9rem center; padding-right: 2.2rem; cursor: pointer;
+    }
+    .form-submit-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--color-accent); color: #fff;
+      font-family: var(--font-body); font-size: 1rem; font-weight: 600;
+      border: none; border-radius: var(--radius); padding: 0.7rem 1.8rem;
+      cursor: pointer; transition: background 0.15s; margin-top: 0.5rem;
+    }
+    .form-submit-btn:hover { background: var(--color-accent-hover); }
+    .form-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
     @media (max-width: 560px) {
       .sub-card {
         grid-template-columns: 1fr;
@@ -379,6 +446,9 @@
           <button class="admin-tab" role="tab" data-panel="listings" aria-selected="false">
             Live Listings
           </button>
+          <button class="admin-tab" role="tab" data-panel="add" aria-selected="false">
+            + Add Business
+          </button>
         </div>
 
         <!-- Pending submissions -->
@@ -397,6 +467,56 @@
         <div class="sub-panel" id="panel-listings" role="tabpanel">
           <p class="sub-loading" id="listingsLoading">Loading…</p>
           <div id="listingsList"></div>
+
+        <!-- Add Business -->
+        </div>
+        <div class="sub-panel" id="panel-add" role="tabpanel">
+          <div class="add-biz-card">
+            <h2 class="add-biz-heading">Add a Business Directly</h2>
+            <p class="add-biz-sub">Use this to add Grove Picks or any business yourself — goes live instantly.</p>
+            <div class="add-biz-error" id="addBizError" style="display:none;"></div>
+            <div class="add-biz-success" id="addBizSuccess" style="display:none;">✅ Business added and live on the site!</div>
+            <form id="addBizForm" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="addName">Business Name <span class="form-required">*</span></label>
+                <input type="text" id="addName" class="form-input" maxlength="120" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="addCategory">Category <span class="form-required">*</span></label>
+                <select id="addCategory" class="form-select" required>
+                  <option value="" disabled selected>Select…</option>
+                  <option value="Restaurant">Restaurant</option>
+                  <option value="Retail">Retail</option>
+                  <option value="Service">Service</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Health">Health</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="addDescription">Description <span class="form-required">*</span></label>
+                <textarea id="addDescription" class="form-textarea" maxlength="600" required></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="addPhone">Phone</label>
+                <input type="tel" id="addPhone" class="form-input" maxlength="30">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="addWebsite">Website or Social</label>
+                <input type="text" id="addWebsite" class="form-input" maxlength="300" placeholder="https://...">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="addGroveNote">Grove Pick Note</label>
+                <span class="form-hint" style="font-family:var(--font-body);font-size:0.8rem;color:#7a7268;display:block;margin-bottom:0.4rem;">Leave blank if not a Grove Pick. One short line — e.g. "Where the community comes to play."</span>
+                <input type="text" id="addGroveNote" class="form-input" maxlength="160">
+              </div>
+              <div class="form-group" style="display:flex;align-items:center;gap:0.6rem;">
+                <input type="checkbox" id="addFeatured" style="width:18px;height:18px;accent-color:var(--color-accent);">
+                <label for="addFeatured" style="font-family:var(--font-body);font-size:0.9rem;font-weight:600;color:var(--color-text);cursor:pointer;">Mark as Grove Pick</label>
+              </div>
+              <button type="submit" class="form-submit-btn" id="addBizBtn">Add to Site</button>
+            </form>
+          </div>
         </div>
 
       </div>
@@ -727,6 +847,61 @@
         });
       });
     }
+
+    /* ── Add Business form ─────────────────────────────────── */
+    document.getElementById('addBizForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl  = document.getElementById('addBizError');
+      const sucEl  = document.getElementById('addBizSuccess');
+      const btn    = document.getElementById('addBizBtn');
+      errEl.style.display = 'none';
+      sucEl.style.display = 'none';
+
+      const name        = document.getElementById('addName').value.trim();
+      const category    = document.getElementById('addCategory').value;
+      const description = document.getElementById('addDescription').value.trim();
+      const phone       = document.getElementById('addPhone').value.trim();
+      const website     = document.getElementById('addWebsite').value.trim();
+      const groveNote   = document.getElementById('addGroveNote').value.trim();
+      const isFeatured  = document.getElementById('addFeatured').checked;
+
+      if (!name)        { errEl.textContent = 'Business name is required.'; errEl.style.display = 'block'; return; }
+      if (!category)    { errEl.textContent = 'Please select a category.'; errEl.style.display = 'block'; return; }
+      if (!description) { errEl.textContent = 'Description is required.'; errEl.style.display = 'block'; return; }
+
+      const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+
+      btn.disabled = true;
+      btn.textContent = 'Adding…';
+
+      const { error } = await supabase.from('listings').insert([{
+        id,
+        name,
+        category,
+        description,
+        phone: phone || '',
+        website: website || '',
+        is_featured: isFeatured,
+        grove_note: groveNote || '',
+        status: 'active'
+      }]);
+
+      if (error) {
+        errEl.textContent = error.message.includes('duplicate') ? 'A listing with that name already exists.' : `Error: ${error.message}`;
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Add to Site';
+        return;
+      }
+
+      sucEl.style.display = 'block';
+      document.getElementById('addBizForm').reset();
+      btn.disabled = false;
+      btn.textContent = 'Add to Site';
+
+      /* Refresh live listings tab count */
+      loadListings();
+    });
 
     /* ── Tab switching ─────────────────────────────────────── */
     document.querySelectorAll('.admin-tab').forEach(tab => {
