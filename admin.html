@@ -537,9 +537,14 @@
     const dashboard   = document.getElementById('adminDashboard');
 
     async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        showDashboard(session.user);
+      if (!supabase) return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          showDashboard(session.user);
+        }
+      } catch(e) {
+        console.error('Session check failed:', e);
       }
     }
 
@@ -547,14 +552,18 @@
       const email    = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       const errEl    = document.getElementById('loginError');
+      const btn      = document.getElementById('loginBtn');
       errEl.textContent = '';
 
+      if (!supabase) {
+        errEl.textContent = 'Auth library failed to load. Please refresh.';
+        return;
+      }
       if (!email || !password) {
         errEl.textContent = 'Please enter your email and password.';
         return;
       }
 
-      const btn = document.getElementById('loginBtn');
       btn.textContent = 'Signing in…';
       btn.disabled = true;
 
@@ -568,7 +577,7 @@
         }
         showDashboard(data.user);
       } catch (err) {
-        errEl.textContent = 'Connection error — check your internet and try again.';
+        errEl.textContent = 'Connection error: ' + (err.message || 'check your internet and try again.');
         btn.textContent = 'Sign In';
         btn.disabled = false;
       }
