@@ -5,6 +5,10 @@
  * RESEND_API_KEY, NOTIFY_EMAIL, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
+'use strict';
+
+const { assertAllowedOrigin, getJsonHeaders } = require('./_allowed-origin');
+
 /* UUID (default Supabase gen_random_uuid) or slug / numeric id */
 const SAFE_SUBMISSION_ID =
   /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|[a-zA-Z0-9_-]{1,128})$/i;
@@ -26,20 +30,32 @@ function subjectSafe(value) {
 }
 
 exports.handler = async (event) => {
+  const headers = getJsonHeaders();
+
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  const gate = assertAllowedOrigin(event);
+  if (!gate.ok) {
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
+  }
+
+  const rawBody = event.body || '';
+  if (rawBody.length > 4096) {
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request' }) };
   }
 
   let body;
   try {
-    body = JSON.parse(event.body || '{}');
+    body = JSON.parse(rawBody);
   } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request' }) };
   }
 
   const id = body.id != null ? String(body.id).trim() : '';
   if (!id || !SAFE_SUBMISSION_ID.test(id)) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid request' }) };
+    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid request' }) };
   }
 
   const apiKey = process.env.RESEND_API_KEY;
@@ -49,7 +65,7 @@ exports.handler = async (event) => {
 
   if (!apiKey || !notifyEmail || !supabaseUrl || !serviceRoleKey) {
     console.error('Missing RESEND_API_KEY, NOTIFY_EMAIL, SUPABASE_URL, or SUPABASE_SERVICE_ROLE_KEY');
-    return { statusCode: 500, body: JSON.stringify({ error: 'Server misconfiguration' }) };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Server misconfiguration' }) };
   }
 
   let submission;
@@ -67,22 +83,22 @@ exports.handler = async (event) => {
 
     if (!res.ok) {
       console.error('Supabase fetch failed:', res.status, await res.text());
-      return { statusCode: 502, body: JSON.stringify({ error: 'Upstream error' }) };
+      return { statusCode: 502, headers, body: JSON.stringify({ error: 'Upstream error' }) };
     }
 
     const rows = await res.json();
     if (!Array.isArray(rows) || rows.length !== 1) {
-      return { statusCode: 404, body: JSON.stringify({ error: 'Not found' }) };
+      return { statusCode: 404, headers, body: JSON.stringify({ error: 'Not found' }) };
     }
 
     submission = rows[0];
     if (submission.status !== 'pending') {
       /* Idempotent no-op: row exists but notification path is only for new pending rows */
-      return { statusCode: 200, body: JSON.stringify({ success: true, skipped: true }) };
+      return { statusCode: 200, headers, body: JSON.stringify({ success: true, skipped: true }) };
     }
   } catch (e) {
     console.error('Supabase load error:', e);
-    return { statusCode: 502, body: JSON.stringify({ error: 'Upstream error' }) };
+    return { statusCode: 502, headers, body: JSON.stringify({ error: 'Upstream error' }) };
   }
 
   const name = submission.name;
@@ -130,12 +146,12 @@ exports.handler = async (event) => {
     if (!res.ok) {
       const err = await res.text();
       console.error('Resend error:', err);
-      return { statusCode: 500, body: JSON.stringify({ error: 'Email failed to send' }) };
+      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Email failed to send' }) };
     }
 
-    return { statusCode: 200, body: JSON.stringify({ success: true }) };
+    return { statusCode: 200, headers, body: JSON.stringify({ success: true }) };
   } catch (err) {
     console.error('Network error:', err);
-    return { statusCode: 500, body: JSON.stringify({ error: 'Email failed to send' }) };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Email failed to send' }) };
   }
 };

@@ -33,6 +33,18 @@ Set these in the Netlify UI (Site settings → Environment variables):
 | `SUPABASE_URL` | Same project URL as the browser (e.g. `https://xxx.supabase.co`) |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Secret** — used only in `notify-submission` to read a submission by id. Never expose this in client bundles. |
 
+### Optional
+
+| Variable | Purpose |
+|----------|---------|
+| `ALLOWED_SITE_ORIGINS` | Comma-separated extra origins allowed to call `verify-recaptcha` and `notify-submission` (e.g. a staging hostname). Production uses `thegrovelist.com` / `www` plus Netlify `URL` / `DEPLOY_*` origins automatically. |
+
+**Browser-only:** those functions reject requests whose `Origin` / `Referer` is not in the allowlist (except when `NETLIFY_DEV=true` for local `netlify dev`). Plain `curl` without a matching origin gets **403** by design.
+
+**reCAPTCHA verify** calls Google with `application/x-www-form-urlencoded` so the site secret is not put in a query string.
+
+**Supabase JS** is loaded from jsDelivr as a **pinned version** (`@2.49.1`) with **SRI** (`integrity` + `crossorigin="anonymous"`) on the immutable `dist/umd/supabase.js` URL. Recompute the hash if you bump the library version.
+
 ## Supabase Row Level Security (RLS)
 
 The anon key in the browser is public by design. **Enforcement is in Postgres policies:** e.g. public `SELECT` on `listings`, anon `INSERT` on `submissions` only, no broad anon `SELECT` on `submissions`, and `UPDATE`/`DELETE` on sensitive tables limited to authenticated admin roles.
