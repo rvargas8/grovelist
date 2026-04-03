@@ -3,7 +3,7 @@
 const SUPABASE_URL = 'https://ndjgquqdaskpllcunpjp.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kamdxdXFkYXNrcGxsY3VucGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2ODg1NDgsImV4cCI6MjA4OTI2NDU0OH0.lqk4xpVWOo-80Agds4g3_te958a8CiknFwcmMTzihwo';
 
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 /* Fallback listings — shown immediately and if Supabase is unavailable.
    Keep to Grove Picks only so the fallback is always credible. */

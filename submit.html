@@ -326,7 +326,7 @@
   <script>
     const SUPABASE_URL = 'https://ndjgquqdaskpllcunpjp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kamdxdXFkYXNrcGxsY3VucGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2ODg1NDgsImV4cCI6MjA4OTI2NDU0OH0.lqk4xpVWOo-80Agds4g3_te958a8CiknFwcmMTzihwo';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     /* Character counter */
     const descField = document.getElementById('fieldDescription');
@@ -417,7 +417,7 @@
           status: 'pending'
         };
 
-        const { error } = await supabase.from('submissions').insert([payload]);
+        const { error } = await sb.from('submissions').insert([payload]);
 
         if (error) {
           console.error('Supabase error:', error);
