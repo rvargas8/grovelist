@@ -407,6 +407,14 @@
         successBox.classList.add('visible');
         successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
+        /* Track conversion in GA */
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'business_submission', {
+            event_category: 'engagement',
+            event_label: category
+          });
+        }
+
       } catch (err) {
         console.error('Network error:', err);
         showError('Could not connect. Please check your internet connection and try again.');
