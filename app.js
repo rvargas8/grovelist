@@ -57,6 +57,16 @@ const FALLBACK_LISTINGS = [
     website: 'https://tampabayshine.com',
     is_featured: false,
     grove_note: 'Reliable, detail-oriented cleaning with all 5-star reviews. Easy online booking.'
+  },
+  {
+    id: 'henry-adames-realtor',
+    name: 'Henry M. Adames — Bilingual REALTOR®',
+    category: 'Service',
+    description: 'Bilingual Realtor® serving Tampa Bay Area, Brandon, Riverview, Valrico, Plant City, and all of Florida. Helps buyers, sellers, investors, and families relocating. Fluent in English and Spanish — call or message anytime.',
+    phone: '(347) 863-1486',
+    website: 'https://instagram.com/1dealllc/',
+    is_featured: false,
+    grove_note: ''
   }
 ];
 
@@ -73,9 +83,11 @@ const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 const categoryBtns = document.querySelectorAll('.category-btn');
 
-/* Current page category — set by category pages via window.PAGE_CATEGORY, else 'all' */
+/* Active category — driven by client-side clicks or initial PAGE_CATEGORY from URL */
+let _activeCategory = window.PAGE_CATEGORY || 'all';
+
 function getCurrentCategory() {
-  return window.PAGE_CATEGORY || 'all';
+  return _activeCategory;
 }
 
 /* Fetch listings from Supabase (source of truth).
@@ -90,7 +102,10 @@ async function loadListings() {
       .select('id, name, category, description, phone, website, is_featured, grove_note')
       .order('is_featured', { ascending: false });
     if (!error && data && data.length > 0) {
-      allListings = data;
+      /* Merge: keep any FALLBACK_LISTINGS entries not yet in Supabase (by id) */
+      const supabaseIds = new Set(data.map(l => l.id));
+      const localOnly = FALLBACK_LISTINGS.filter(l => !supabaseIds.has(l.id));
+      allListings = [...data, ...localOnly];
       const term = searchInput?.value || '';
       renderListings(allListings, term, getCurrentCategory());
     }
@@ -342,7 +357,7 @@ document.getElementById('aboutScrollBtn')?.addEventListener('click', () => {
   if (cards) cards.scrollBy({ left: 300, behavior: 'smooth' });
 });
 
-/* On load: highlight the active category button */
+/* Highlight the active category button and update the heading */
 function applyActiveCategory() {
   const cat = getCurrentCategory();
   categoryBtns.forEach(btn => {
@@ -354,6 +369,21 @@ function applyActiveCategory() {
   }
 }
 applyActiveCategory();
+
+/* Client-side category filtering — intercept all category button clicks */
+categoryBtns.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const cat = btn.dataset.category || 'all';
+    _activeCategory = cat;
+    applyActiveCategory();
+    const term = searchInput ? searchInput.value || '' : '';
+    renderListings(allListings, term, cat);
+    /* Scroll to listings */
+    const listingsSection = document.querySelector('.listings-section');
+    if (listingsSection) listingsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
 
 /* Email obfuscation: build mailto from data attributes to deter scrapers */
 document.querySelectorAll('[data-email-user][data-email-domain]').forEach(el => {
