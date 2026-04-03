@@ -656,6 +656,7 @@
         return;
       }
       listEl.innerHTML = data.map(s => renderSubmissionCard(s, false)).join('');
+      attachSubmissionHandlers(listEl, false);
     }
 
     async function loadListings() {
@@ -715,7 +716,11 @@
         <div class="sub-actions">
           <button class="sub-btn sub-btn-approve" data-id="${esc(s.id)}" data-action="approve">Approve</button>
           <button class="sub-btn sub-btn-reject"  data-id="${esc(s.id)}" data-action="reject">Reject</button>
-        </div>` : `<div style="font-size:0.82rem;color:#9a9290;padding-top:0.25rem;">${fmtDate(s.reviewed_at || s.submitted_at)}</div>`;
+        </div>` : `
+        <div style="display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end;">
+          <span style="font-size:0.82rem;color:#9a9290;">${fmtDate(s.reviewed_at || s.submitted_at)}</span>
+          <button class="sub-btn sub-btn-danger" style="font-size:0.78rem;padding:0.3rem 0.7rem;" data-id="${esc(s.id)}" data-action="delete-submission">Delete</button>
+        </div>`;
 
       return `
         <div class="sub-card" id="sub-${esc(s.id)}">
@@ -761,6 +766,8 @@
             await approveSubmission(id, card);
           } else if (action === 'reject') {
             await rejectSubmission(id, card);
+          } else if (action === 'delete-submission') {
+            await deleteSubmission(id, card);
           }
         });
       });
@@ -843,6 +850,16 @@
 
       const badge = document.getElementById('pendingBadge');
       badge.textContent = Math.max(0, parseInt(badge.textContent) - 1);
+    }
+
+    async function deleteSubmission(id, card) {
+      const confirmed = confirm('Permanently delete this submission? This cannot be undone.');
+      if (!confirmed) return;
+      const { error } = await sb.from('submissions').delete().eq('id', id);
+      if (error) { alert(`Error: ${error.message}`); return; }
+      card.style.transition = 'opacity 0.3s';
+      card.style.opacity = '0';
+      setTimeout(() => card.remove(), 300);
     }
 
     function attachListingHandlers(container) {
