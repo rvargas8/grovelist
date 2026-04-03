@@ -292,6 +292,10 @@
               <input type="text" id="fieldContact" name="submitter_contact" class="form-input" placeholder="your@email.com or (813) 555-0100" maxlength="200">
             </div>
 
+            <div class="form-group">
+              <div class="g-recaptcha" data-sitekey="6LfBk6UsAAAAANC0pEVux7h7aGyQFwCDjwA39Z33"></div>
+            </div>
+
             <button type="submit" class="form-submit-btn" id="submitBtn">
               Submit for Review
             </button>
@@ -317,6 +321,7 @@
     <button id="cookieAccept" class="cookie-btn" type="button">Got it</button>
   </div>
 
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = 'https://ndjgquqdaskpllcunpjp.supabase.co';
@@ -376,10 +381,32 @@
         return;
       }
 
+      /* Check reCAPTCHA */
+      const recaptchaToken = grecaptcha.getResponse();
+      if (!recaptchaToken) {
+        showError('Please check the "I\'m not a robot" box.');
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.textContent = 'Submitting…';
 
       try {
+        /* Verify reCAPTCHA server-side */
+        const verifyRes = await fetch('/.netlify/functions/verify-recaptcha', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: recaptchaToken })
+        });
+        const verifyData = await verifyRes.json();
+        if (!verifyData.success) {
+          showError('reCAPTCHA verification failed. Please try again.');
+          grecaptcha.reset();
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit for Review';
+          return;
+        }
+
         const payload = {
           name,
           category,
@@ -395,6 +422,7 @@
         if (error) {
           console.error('Supabase error:', error);
           showError('Something went wrong on our end. Please try again or email us directly.');
+          grecaptcha.reset();
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit for Review';
           return;
@@ -418,6 +446,7 @@
       } catch (err) {
         console.error('Network error:', err);
         showError('Could not connect. Please check your internet connection and try again.');
+        grecaptcha.reset();
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit for Review';
       }

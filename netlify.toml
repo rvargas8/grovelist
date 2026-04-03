@@ -1,4 +1,7 @@
 # Netlify config for The Grove List
+[functions]
+  directory = "netlify/functions"
+
 [[headers]]
   for = "/*"
   [headers.values]
