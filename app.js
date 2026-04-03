@@ -140,7 +140,7 @@ function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
     );
   }
 
-  if (listingsCount) listingsCount.textContent = `${filtered.length} business${filtered.length !== 1 ? 'es' : ''} found`;
+  if (listingsCount) listingsCount.textContent = '';
   if (emptyState) {
     const term = searchTerm.trim();
     const msg = term
