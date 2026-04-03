@@ -2,34 +2,39 @@
 
 ## SQL Injection
 
-**This site is not vulnerable to SQL injection** for the following reasons:
+**This site is not vulnerable to SQL injection** for the usual reasons:
 
-1. **No raw SQL** — The app uses Supabase's JavaScript client. All database access goes through Supabase's REST API, which uses parameterized queries. User input is never concatenated into SQL strings.
+1. **No raw SQL** — The app uses Supabase's JavaScript client. Database access goes through Supabase's REST API (parameterized).
+2. **Fixed query shapes** — Client code uses fixed table and column names; user data is bound as values, not concatenated into SQL.
 
-2. **Read-only from client** — The frontend only performs `SELECT` operations. There is no form that writes to the database from the browser.
+## Client vs server writes
 
-3. **Fixed queries** — The Supabase query uses fixed column names and no user-controlled values in the query itself:
-   ```js
-   .from('listings')
-   .select('id, name, category, description, phone, website, is_featured')
-   .order('is_featured', { ascending: false })
-   ```
+- **Public site (`app.js`, category pages)** — Reads `listings` from Supabase (plus static fallback).
+- **`submit.html`** — Inserts into `submissions` after server-side reCAPTCHA verification.
+- **`admin.html`** — Authenticated Supabase users review submissions and manage listings.
 
-## Other Protections
+RLS must match this model (anon read on listings, controlled insert on submissions, authenticated admin writes).
 
-- **XSS** — All user-facing and database-sourced data is escaped with `escapeHtml()` before being inserted into the DOM.
-- **URL safety** — Website links are validated with `isSafeUrl()` to allow only `http://` and `https://`. Blocks `javascript:`, `data:`, `vbscript:`, etc.
-- **ID sanitization** — Card IDs use `safeId()` to allow only alphanumeric, hyphen, and underscore characters.
-- **Phone links** — Tel hrefs use only digits (0–15 chars) stripped from input.
-- **Security headers** — `_headers` (Netlify) and `netlify.toml` add X-Frame-Options, X-Content-Type-Options, CSP, etc.
-- **rel="noopener noreferrer"** — Used on external links to reduce tab-nabbing and referrer leakage.
+## Other protections
+
+- **XSS** — Listing and admin UI escape user- and DB-sourced text before DOM insertion; website `href` values are restricted to `http:` / `https:` where applicable.
+- **Security headers** — `netlify.toml` (and `_headers` / `vercel.json` where used) set frame options, CSP, etc.
+- **Submission notify** — `notify-submission` Netlify function accepts only a submission **id**, loads the row with **SUPABASE_SERVICE_ROLE_KEY**, HTML-escapes fields for email, and ignores non-`pending` rows for mail (idempotent no-op). It does **not** trust client-provided name/description for email body.
+
+## Netlify function environment variables
+
+Set these in the Netlify UI (Site settings → Environment variables):
+
+| Variable | Purpose |
+|----------|---------|
+| `RESEND_API_KEY` | Send notification email |
+| `NOTIFY_EMAIL` | Inbox that receives new submission alerts |
+| `RECAPTCHA_SECRET_KEY` | Server-side reCAPTCHA verification |
+| `SUPABASE_URL` | Same project URL as the browser (e.g. `https://xxx.supabase.co`) |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Secret** — used only in `notify-submission` to read a submission by id. Never expose this in client bundles. |
 
 ## Supabase Row Level Security (RLS)
 
-If you enable Supabase writes later, configure RLS in the Supabase dashboard:
+The anon key in the browser is public by design. **Enforcement is in Postgres policies:** e.g. public `SELECT` on `listings`, anon `INSERT` on `submissions` only, no broad anon `SELECT` on `submissions`, and `UPDATE`/`DELETE` on sensitive tables limited to authenticated admin roles.
 
-1. Enable RLS on the `listings` table.
-2. For anon read: `CREATE POLICY "Allow public read" ON listings FOR SELECT USING (true);`
-3. For anon insert (if adding a form): restrict who can insert, or use a service role for admin-only inserts.
-
-The anon key in the client is meant to be public. Security is enforced by RLS policies in the database.
+Review policies in the Supabase dashboard whenever you change tables or client flows.

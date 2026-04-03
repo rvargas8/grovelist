@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Local tooling / QA output
+.gstack/*.log
+.gstack/security-reports/

@@ -105,9 +105,9 @@ function getCurrentCategory() {
 async function loadListings() {
   const cat = getCurrentCategory();
   renderListings(allListings, '', cat); /* show fallback immediately */
-  if (!supabase) return;
+  if (!sb) return;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await sb
       .from('listings')
       .select('id, name, category, description, phone, website, is_featured, grove_note')
       .order('is_featured', { ascending: false });

@@ -417,7 +417,11 @@
           status: 'pending'
         };
 
-        const { error } = await sb.from('submissions').insert([payload]);
+        const { data: inserted, error } = await sb
+          .from('submissions')
+          .insert([payload])
+          .select('id')
+          .single();
 
         if (error) {
           console.error('Supabase error:', error);
@@ -428,13 +432,15 @@
           return;
         }
 
-        /* Fire email notification (best effort — don't block success if it fails) */
+        /* Fire email notification (best effort — server loads row by id; don't block success if it fails) */
         try {
-          await fetch('/.netlify/functions/notify-submission', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, category, description, phone, website, submitter_contact: contact })
-          });
+          if (inserted?.id) {
+            await fetch('/.netlify/functions/notify-submission', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: inserted.id })
+            });
+          }
         } catch (notifyErr) {
           console.warn('Notification failed (non-critical):', notifyErr);
         }

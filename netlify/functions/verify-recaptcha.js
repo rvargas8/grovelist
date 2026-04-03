@@ -32,6 +32,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({ success: data.success })
     };
   } catch (err) {
+    console.error('reCAPTCHA verify error:', err);
     return {
       statusCode: 500,
       body: JSON.stringify({ success: false, error: 'Verification failed' })
