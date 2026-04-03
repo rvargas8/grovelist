@@ -527,8 +527,8 @@
   <script>
     const SUPABASE_URL = 'https://ndjgquqdaskpllcunpjp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kamdxdXFkYXNrcGxsY3VucGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2ODg1NDgsImV4cCI6MjA4OTI2NDU0OH0.lqk4xpVWOo-80Agds4g3_te958a8CiknFwcmMTzihwo';
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-    if (!supabase) {
+    const sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    if (!sb) {
       document.getElementById('loginError').textContent = 'Could not load auth library. Please refresh the page.';
     }
 
@@ -537,9 +537,9 @@
     const dashboard   = document.getElementById('adminDashboard');
 
     async function checkSession() {
-      if (!supabase) return;
+      if (!sb) return;
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await sb.auth.getSession();
         if (session) {
           showDashboard(session.user);
         }
@@ -555,7 +555,7 @@
       const btn      = document.getElementById('loginBtn');
       errEl.textContent = '';
 
-      if (!supabase) {
+      if (!sb) {
         errEl.textContent = 'Auth library failed to load. Please refresh.';
         return;
       }
@@ -568,7 +568,7 @@
       btn.disabled = true;
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
         if (error) {
           errEl.textContent = error.message || 'Sign-in failed. Check your credentials.';
           btn.textContent = 'Sign In';
@@ -589,7 +589,7 @@
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
-      await supabase.auth.signOut();
+      await sb.auth.signOut();
       location.reload();
     });
 
@@ -611,7 +611,7 @@
       loadEl.style.display = 'block';
       listEl.innerHTML = '';
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('submissions')
         .select('*')
         .eq('status', 'pending')
@@ -639,7 +639,7 @@
       loadEl.style.display = 'block';
       listEl.innerHTML = '';
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('submissions')
         .select('*')
         .in('status', ['approved', 'rejected'])
@@ -664,7 +664,7 @@
       loadEl.style.display = 'block';
       listEl.innerHTML = '';
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('listings')
         .select('id, name, category, is_featured, created_at')
         .order('is_featured', { ascending: false });
@@ -768,7 +768,7 @@
 
     async function approveSubmission(id, card) {
       /* 1. Get the submission */
-      const { data: sub, error: fetchErr } = await supabase
+      const { data: sub, error: fetchErr } = await sb
         .from('submissions')
         .select('*')
         .eq('id', id)
@@ -787,7 +787,7 @@
         .replace(/^-|-$/g, '')
         .slice(0, 60);
 
-      const { error: insertErr } = await supabase.from('listings').insert([{
+      const { error: insertErr } = await sb.from('listings').insert([{
         id: listingId,
         name: sub.name,
         category: sub.category,
@@ -806,7 +806,7 @@
       }
 
       /* 3. Update submission status */
-      await supabase.from('submissions').update({
+      await sb.from('submissions').update({
         status: 'approved',
         reviewed_at: new Date().toISOString()
       }).eq('id', id);
@@ -827,7 +827,7 @@
         return;
       }
 
-      const { error } = await supabase.from('submissions').update({
+      const { error } = await sb.from('submissions').update({
         status: 'rejected',
         reviewed_at: new Date().toISOString()
       }).eq('id', id);
@@ -854,7 +854,7 @@
           if (!confirmed) return;
 
           btn.disabled = true;
-          const { error } = await supabase.from('listings').delete().eq('id', id);
+          const { error } = await sb.from('listings').delete().eq('id', id);
           if (error) {
             alert(`Error removing listing: ${error.message}`);
             btn.disabled = false;
@@ -892,7 +892,7 @@
       btn.disabled = true;
       btn.textContent = 'Adding…';
 
-      const { error } = await supabase.from('listings').insert([{
+      const { error } = await sb.from('listings').insert([{
         id,
         name,
         category,
