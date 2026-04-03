@@ -527,7 +527,10 @@
   <script>
     const SUPABASE_URL = 'https://ndjgquqdaskpllcunpjp.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kamdxdXFkYXNrcGxsY3VucGpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2ODg1NDgsImV4cCI6MjA4OTI2NDU0OH0.lqk4xpVWOo-80Agds4g3_te958a8CiknFwcmMTzihwo';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    if (!supabase) {
+      document.getElementById('loginError').textContent = 'Could not load auth library. Please refresh the page.';
+    }
 
     /* ── Auth ─────────────────────────────────────────────── */
     const loginScreen = document.getElementById('loginScreen');
@@ -555,14 +558,20 @@
       btn.textContent = 'Signing in…';
       btn.disabled = true;
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        errEl.textContent = error.message || 'Sign-in failed. Check your credentials.';
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          errEl.textContent = error.message || 'Sign-in failed. Check your credentials.';
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+          return;
+        }
+        showDashboard(data.user);
+      } catch (err) {
+        errEl.textContent = 'Connection error — check your internet and try again.';
         btn.textContent = 'Sign In';
         btn.disabled = false;
-        return;
       }
-      showDashboard(data.user);
     });
 
     /* Allow Enter key on password field */
