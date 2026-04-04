@@ -85,7 +85,7 @@ const FALLBACK_LISTINGS = [
     description: 'Nexa Insurance Solutions provides personalized support to individuals and families by helping you navigate paperwork, applications, and everyday administrative tasks with ease and confidence. Also offering Auto, Commercial, Home, Renters, and Pet Insurance.',
     phone: '5853172462',
     website: 'https://nexainsurancesolution.com',
-    is_featured: true,
+    is_featured: false,
     grove_note: ''
   }
 ];
@@ -147,9 +147,11 @@ async function loadListings() {
 
 /* Render cards */
 function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
-  let filtered = listings.filter(l => l.is_featured);
+  let filtered = [...listings];
   if (categoryFilter !== 'all') {
     filtered = filtered.filter(l => l.category === categoryFilter);
+  } else {
+    filtered = filtered.filter(l => l.is_featured);
   }
   if (searchTerm.trim()) {
     const q = searchTerm.trim().toLowerCase();
