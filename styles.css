@@ -462,7 +462,6 @@ p { margin: 0 0 var(--spacing-sm); max-width: var(--measure); }
 .listing-card.featured {
   background: var(--color-bg-card);
   border-color: var(--color-border);
-  border-left: 3px solid var(--color-featured);
 }
 .listing-card.featured:hover {
   transform: translateY(-6px);
