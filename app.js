@@ -130,7 +130,7 @@ async function loadListings() {
 
 /* Render cards */
 function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
-  let filtered = [...listings];
+  let filtered = listings.filter(l => l.is_featured);
   if (categoryFilter !== 'all') {
     filtered = filtered.filter(l => l.category === categoryFilter);
   }
