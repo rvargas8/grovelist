@@ -77,6 +77,16 @@ const FALLBACK_LISTINGS = [
     website: 'https://instagram.com/1dealllc/',
     is_featured: false,
     grove_note: ''
+  },
+  {
+    id: 'nexa-insurance-solutions',
+    name: 'Nexa Insurance Solutions',
+    category: 'Service',
+    description: 'Nexa Insurance Solutions provides personalized support to individuals and families by helping you navigate paperwork, applications, and everyday administrative tasks with ease and confidence. Also offering Auto, Commercial, Home, Renters, and Pet Insurance.',
+    phone: '5853172462',
+    website: 'https://nexainsurancesolution.com',
+    is_featured: true,
+    grove_note: ''
   }
 ];
 
@@ -113,10 +123,17 @@ async function loadListings() {
       .select('id, name, category, description, phone, website, is_featured, grove_note')
       .order('is_featured', { ascending: false });
     if (!error && data && data.length > 0) {
-      /* Merge: keep any FALLBACK_LISTINGS entries not yet in Supabase (by id) */
+      /* Merge: FALLBACK is source of truth for is_featured and website.
+         Supabase provides description, phone, and other fields. */
+      const fallbackMap = new Map(FALLBACK_LISTINGS.map(l => [l.id, l]));
+      const merged = data.map(l => {
+        const fb = fallbackMap.get(l.id);
+        if (!fb) return l;
+        return { ...l, is_featured: fb.is_featured, website: fb.website || l.website };
+      });
       const supabaseIds = new Set(data.map(l => l.id));
       const localOnly = FALLBACK_LISTINGS.filter(l => !supabaseIds.has(l.id));
-      allListings = [...data, ...localOnly];
+      allListings = [...merged, ...localOnly];
       const term = searchInput?.value || '';
       renderListings(allListings, term, getCurrentCategory());
     }
