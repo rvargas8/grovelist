@@ -170,13 +170,24 @@ function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
   listingsGrid.innerHTML = html || '';
 }
 
+function formatPhone(phone) {
+  const digits = String(phone).replace(/\D/g, '');
+  if (digits.length === 10) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+  if (digits.length === 11 && digits[0] === '1') {
+    return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+  }
+  return phone;
+}
+
 function renderCard(item) {
   const featured = item.is_featured ? '<span class="grove-pick-badge">Grove Pick</span>' : '';
   const groveNote = (item.grove_note || '').trim();
   const groveNoteHtml = groveNote ? `<p class="card-grove-note">${escapeHtml(groveNote)}</p>` : '';
   const phoneDigits = item.phone ? String(item.phone).replace(/\D/g, '').slice(0, 15) : '';
   const phoneDisplay = phoneDigits
-    ? `<a href="tel:${phoneDigits}" class="card-link">${escapeHtml(item.phone)}</a>`
+    ? `<a href="tel:${phoneDigits}" class="card-link">${escapeHtml(formatPhone(item.phone))}</a>`
     : '<span class="card-placeholder">—</span>';
   const websiteDisplay = item.website && isSafeUrl(item.website)
     ? `<a href="${escapeHtml(item.website)}" class="card-link card-website-link" target="_blank" rel="noopener noreferrer">${escapeHtml(formatWebsiteDisplay(item.website))}</a>`
