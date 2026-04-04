@@ -513,6 +513,12 @@ p { margin: 0 0 var(--spacing-sm); max-width: var(--measure); }
   font-size: 0.9375rem;
   margin: 0;
 }
+.card-phone .card-link,
+.card-website .card-link {
+  min-height: var(--tap-min);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
 .card-phone:last-of-type,
 .card-website:last-of-type { margin-bottom: 0; }
 .card-placeholder {
