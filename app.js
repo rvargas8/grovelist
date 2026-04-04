@@ -64,7 +64,7 @@ const FALLBACK_LISTINGS = [
     category: 'Service',
     description: 'Custom balloon décor for birthdays, baby showers, weddings, and any celebration in the Southshore area. Every arrangement is handcrafted — from organic arches and balloon walls to marquee designs and custom backdrops. The quality and attention to detail shows in every setup.',
     phone: '(813) 400-7909',
-    website: 'mailto:iris@lareinaballoons.com',
+    website: 'https://www.instagram.com/lareinaballoons/',
     is_featured: true,
     grove_note: 'Handcrafted balloon art that turns any event into a moment.'
   },
