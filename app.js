@@ -161,16 +161,9 @@ function renderListings(listings, searchTerm = '', categoryFilter = 'all') {
     }
   }
   if (!listingsGrid) return;
-  const picks = filtered.filter(l => l.is_featured);
-  const discovers = filtered.filter(l => !l.is_featured);
-  let html = '';
-  if (picks.length > 0) {
-    html += `<div class="listings-section-group"><h3 class="section-label">Our Picks</h3><div class="listings-grid">${picks.map(item => renderCard(item)).join('')}</div></div>`;
-  }
-  if (discovers.length > 0) {
-    html += `<div class="listings-section-group"><h3 class="section-label">Worth Discovering</h3><div class="listings-grid">${discovers.map(item => renderCard(item)).join('')}</div></div>`;
-  }
-  listingsGrid.innerHTML = html || '';
+  listingsGrid.innerHTML = filtered.length
+    ? `<div class="listings-grid">${filtered.map(item => renderCard(item)).join('')}</div>`
+    : '';
 }
 
 function formatPhone(phone) {
