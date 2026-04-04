@@ -106,6 +106,7 @@ async function loadListings() {
   const cat = getCurrentCategory();
   renderListings(allListings, '', cat); /* show fallback immediately */
   if (!sb) return;
+  if (listingsGrid) listingsGrid.setAttribute('data-loading', '');
   try {
     const { data, error } = await sb
       .from('listings')
@@ -122,6 +123,8 @@ async function loadListings() {
     /* If empty or error, fallback stays shown */
   } catch (e) {
     /* Network error — fallback stays shown */
+  } finally {
+    if (listingsGrid) listingsGrid.removeAttribute('data-loading');
   }
 }
 
