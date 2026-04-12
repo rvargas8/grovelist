@@ -2,245 +2,112 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Daily Scripture — your daily companion for Bible reading. Verse of the day, reading plan, and Bible search.">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "The Grove List",
-    "url": "https://thegrovelist.com",
-    "logo": "https://thegrovelist.com/orange.png",
-    "image": "https://thegrovelist.com/orange.png",
-    "description": "Your official guide to local businesses in Southern Hillsborough County, Florida.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Southern Hillsborough County",
-      "addressRegion": "FL",
-      "addressCountry": "US"
-    }
-  }
-  </script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="The Grove List — your official guide to local businesses in Southern Hillsborough County, Florida. Find trusted shops, restaurants, and services.">
-  <meta property="og:title" content="The Grove List | Southern Hillsborough County">
-  <meta property="og:description" content="Your official guide to local businesses in Southern Hillsborough County, Florida.">
+  <meta property="og:title" content="Daily Scripture — Daily Bible Reading">
+  <meta property="og:description" content="Verse of the day, reading plan, and Bible search. A simple tool for daily time in God's Word.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://thegrovelist.com/orange.png">
-  <meta property="og:url" content="https://thegrovelist.com">
-  <title>The Grove List | Southern Hillsborough County</title>
+  <title>Daily Scripture — Daily Bible Reading</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
-  <!-- Google Analytics 4 — Measurement ID must match the GA4 property in analytics.google.com -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7KXDMST12"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C7KXDMST12');
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <header class="site-header">
     <div class="container header-inner">
-      <div class="header-logo-title">
-        <img src="orange.png" alt="orange grove icon" class="header-logo" width="210" height="140">
-        <h1 class="site-title">The Grove List</h1>
+      <div class="header-brand">
+        <span class="header-cross" aria-hidden="true">✝</span>
+        <h1 class="site-title">Daily Scripture</h1>
       </div>
-      <p class="site-tagline">Your official guide to small businesses in Southshore</p>
+      <p class="site-tagline">Your daily companion for God's Word</p>
+      <div class="translation-wrap">
+        <label for="translationSelect" class="translation-label">Translation</label>
+        <select id="translationSelect" class="translation-select" aria-label="Select Bible translation">
+          <option value="">Loading translations…</option>
+        </select>
+      </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <section class="search-section" aria-label="Search businesses">
+  <main>
+
+    <!-- Verse of the Day -->
+    <section class="votd-section" aria-label="Verse of the day">
       <div class="container">
-        <p class="search-label">Find a local business</p>
-        <form class="search-form" role="search" id="searchForm">
-          <label for="searchInput" class="sr-only">Search businesses by name or description</label>
+        <h2 class="section-title">Verse of the Day</h2>
+        <div class="votd-card" id="votdCard">
+          <div class="card-state" id="votdLoading" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Loading today's verse…</span>
+          </div>
+          <div class="votd-body hidden" id="votdContent">
+            <blockquote class="votd-text" id="votdText"></blockquote>
+            <cite class="votd-ref" id="votdRef"></cite>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Reading Plan -->
+    <section class="reading-section" aria-label="Daily reading plan">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Today's Reading</h2>
+          <span class="day-badge">Day <span id="dayNumber">—</span> of 365</span>
+        </div>
+        <p class="section-sub">A sequential Bible-in-a-Year plan — 3 chapters per day.</p>
+        <div class="reading-cards" id="readingCards">
+          <!-- populated by JS -->
+        </div>
+        <div class="chapter-view hidden" id="chapterView">
+          <div class="chapter-header">
+            <h3 class="chapter-title" id="chapterTitle"></h3>
+            <button type="button" class="chapter-close" id="chapterClose" aria-label="Close chapter">✕ Close</button>
+          </div>
+          <div class="chapter-body" id="chapterBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <section class="search-section" aria-label="Search the Bible">
+      <div class="container">
+        <h2 class="section-title">Search Scripture</h2>
+        <form class="search-form" id="searchForm" role="search">
           <div class="search-pill">
+            <label for="searchInput" class="sr-only">Search the Bible by keyword or reference</label>
             <input
               type="search"
               id="searchInput"
               name="q"
               class="search-input"
-              placeholder="Search businesses..."
-              aria-label="Search businesses by name or description"
+              placeholder="Search by keyword or verse reference…"
               autocomplete="off"
+              aria-label="Search the Bible"
             >
-            <button type="submit" class="search-button">
-              <span class="search-button-text">Search</span>
-            </button>
+            <button type="submit" class="search-btn">Search</button>
           </div>
         </form>
-      </div>
-    </section>
-
-    <section class="filters-section" aria-label="Filter by category">
-      <div class="container">
-        <h2 class="filters-heading">Browse by category</h2>
-        <div class="category-buttons" role="group" aria-label="Category filter buttons">
-          <a href="/" class="category-btn active" data-category="all">All</a>
-          <a href="restaurant.html" class="category-btn" data-category="Restaurant">Restaurant</a>
-          <a href="retail.html" class="category-btn" data-category="Retail">Retail</a>
-          <a href="service.html" class="category-btn" data-category="Service">Service</a>
-          <a href="sports.html" class="category-btn" data-category="Sports">Sports</a>
-          <a href="health.html" class="category-btn" data-category="Health">Health</a>
-          <a href="other.html" class="category-btn" data-category="Other">Other</a>
+        <div id="searchResults" class="search-results hidden" aria-live="polite">
+          <!-- populated by JS -->
         </div>
       </div>
     </section>
 
-    <section class="listings-section" aria-label="Business listings">
-      <div class="container">
-        <h2 class="listings-heading">Around the Grove</h2>
-        <p id="listingsCount" class="listings-count" aria-live="polite"></p>
-        <div id="listingsGrid" class="listings-sections">
-          <div class="listings-section-group">
-            <h3 class="section-label">Our Picks</h3>
-            <div class="listings-grid">
-              <article class="listing-card featured" id="listing-rello-runs">
-                <p class="card-category">Sports</p>
-                <span class="grove-pick-badge">Grove Pick</span>
-                <h3 class="card-name">Rello Runs Academy</h3>
-                <p class="card-grove-note">The kind of place where kids learn more than layups.</p>
-                <p class="card-description">Basketball academy focused on faith, teamwork, and encouragement. Expert coaching, private training, homeschool P.E., camps, and 3v3 leagues for young athletes in Riverview.</p>
-                <p class="card-phone"><span class="card-placeholder">—</span></p>
-                <p class="card-website"><a href="https://relloruns.com" class="card-link card-website-link" target="_blank" rel="noopener">relloruns.com</a></p>
-              </article>
-              <article class="listing-card featured" id="listing-italian-kitchen">
-                <p class="card-category">Restaurant</p>
-                <span class="grove-pick-badge">Grove Pick</span>
-                <h3 class="card-name">Italian Kitchen Grill & Cafe</h3>
-                <p class="card-grove-note">Homemade pasta and Mediterranean flavors. Great for family dinner.</p>
-                <p class="card-description">Fresh homemade Italian cuisine in Riverview. Stone oven baked pastas, seafood risotto, specialty dishes from Sicily to Florence. Family-friendly, wine menu, pickup and delivery.</p>
-                <p class="card-phone"><a href="tel:+18136710953" class="card-link">(813) 671-0953</a></p>
-                <p class="card-website"><a href="https://italiankitchencafe.com" class="card-link card-website-link" target="_blank" rel="noopener">italiankitchencafe.com</a></p>
-              </article>
-              <article class="listing-card featured" id="listing-beauty-doctors">
-                <p class="card-category">Health</p>
-                <span class="grove-pick-badge">Grove Pick</span>
-                <h3 class="card-name">The Beauty Doctors</h3>
-                <p class="card-grove-note">Expert care in a welcoming, local setting.</p>
-                <p class="card-description">Medical aesthetics and beauty services in Gibsonton. Skincare, injectables, and treatments from experienced practitioners who know the community.</p>
-                <p class="card-phone"><a href="tel:8137315298" class="card-link">(813) 731-5298</a></p>
-                <p class="card-website"><a href="https://thebeautydoctorsflorida.com" class="card-link card-website-link" target="_blank" rel="noopener">thebeautydoctorsflorida.com</a></p>
-              </article>
-              <article class="listing-card featured">
-                <p class="card-category">Sports</p>
-                <span class="grove-pick-badge">Grove Pick</span>
-                <h3 class="card-name">Apollo Beach Racquet and Fitness Club</h3>
-                <p class="card-grove-note">Where the community comes to play.</p>
-                <p class="card-description">Tennis and pickleball in Apollo Beach. Courts, lessons, clinics, and social play for all ages and skill levels.</p>
-                <p class="card-phone"><a href="tel:+18136411922" class="card-link">(813) 641-1922</a></p>
-                <p class="card-website"><a href="https://www.abrfc.com" class="card-link card-website-link" target="_blank" rel="noopener">abrfc.com</a></p>
-              </article>
-              <article class="listing-card featured" id="listing-la-reina-balloons">
-                <p class="card-category">Service</p>
-                <span class="grove-pick-badge">Grove Pick</span>
-                <h3 class="card-name">La Reina Balloons</h3>
-                <p class="card-grove-note">Handcrafted balloon art that turns any event into a moment.</p>
-                <p class="card-description">Custom balloon décor for birthdays, baby showers, weddings, and any celebration in the Southshore area. Every arrangement is handcrafted — from organic arches and balloon walls to marquee designs and custom backdrops. The quality and attention to detail shows in every setup.</p>
-                <p class="card-phone"><a href="tel:+18134007909" class="card-link">(813) 400-7909</a></p>
-                <p class="card-website"><a href="mailto:iris@lareinaballoons.com" class="card-link card-website-link">iris@lareinaballoons.com</a></p>
-              </article>
-            </div>
-          </div>
-          <div class="listings-section-group">
-            <h3 class="section-label">Worth Discovering</h3>
-            <div class="listings-grid">
-              <article class="listing-card">
-                <p class="card-category">Service</p>
-                <h3 class="card-name">Tampa Bay Shine</h3>
-                <p class="card-description">Professional residential and commercial cleaning serving Southern Hillsborough County. House cleaning, deep cleaning, move-in/move-out, Airbnb turnovers, office cleaning, and window cleaning. All 5-star reviews.</p>
-                <p class="card-phone"><span class="card-placeholder">—</span></p>
-                <p class="card-website"><a href="https://tampabayshine.com" class="card-link card-website-link" target="_blank" rel="noopener">tampabayshine.com</a></p>
-              </article>
-              <article class="listing-card" id="listing-henry-adames-realtor">
-                <p class="card-category">Service</p>
-                <h3 class="card-name">Henry M. Adames — Bilingual REALTOR®</h3>
-                <p class="card-description">Bilingual Realtor® serving Tampa Bay Area, Brandon, Riverview, Valrico, Plant City, and all of Florida. Helps buyers, sellers, investors, and families relocating. Fluent in English and Spanish — call or message anytime.</p>
-                <p class="card-phone"><a href="tel:+13478631486" class="card-link">(347) 863-1486</a></p>
-                <p class="card-website"><a href="https://instagram.com/1dealllc/" class="card-link card-website-link" target="_blank" rel="noopener">instagram.com/1dealllc</a></p>
-              </article>
-            </div>
-          </div>
-        </div>
-        <div id="emptyState" class="empty-state hidden">
-          <p class="empty-state-msg">No businesses match your search.</p>
-          <button class="empty-state-clear" id="clearSearchBtn" type="button">Clear search</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="new-mover-section" aria-label="New to the area">
-      <div class="container">
-        <p class="new-mover-eyebrow">New to the Southshore area?</p>
-        <p class="new-mover-body">Whether you just moved to Riverview, Apollo Beach, or anywhere in between — The Grove List is your shortcut to the local spots worth knowing. Every business here is personally reviewed. No paid placements, no guesswork.</p>
-      </div>
-    </section>
-
-    <section class="about-section" id="about-section" aria-label="About The Grove List">
-      <div class="container">
-        <div class="about-header">
-          <span class="about-accent" aria-hidden="true"></span>
-          <h2 class="about-heading">About The Grove List</h2>
-          <button type="button" class="about-scroll-btn" id="aboutScrollBtn" aria-label="Scroll cards right" title="See more">
-            <span class="about-scroll-arrow" aria-hidden="true">›</span>
-          </button>
-        </div>
-        <div class="about-cards" id="aboutCards" role="list">
-          <article class="about-card" role="listitem">
-            <h3 class="about-card-title">What is a Grove Pick?</h3>
-            <p class="about-card-desc">Our curated favorites. Local spots we'd genuinely recommend to a neighbor — not ads, not paid placements. If it's marked Grove Pick, we've vouched for it.</p>
-          </article>
-          <a href="how-we-add-business.html" class="about-card about-card--link" role="listitem">
-            <h3 class="about-card-title">How We Add Businesses</h3>
-            <p class="about-card-desc">No fees, no catch. Fill out our short form and we'll have you live within 24 hours. We'd rather have real businesses than an empty directory.</p>
-            <span class="about-card-more">Learn more →</span>
-          </a>
-          <a href="why-local.html" class="about-card about-card--link" role="listitem">
-            <h3 class="about-card-title">Why Local?</h3>
-            <p class="about-card-desc">Chains have big marketing budgets. Your local dentist, BBQ joint, and basketball coach don't. We're trying to level the field a little.</p>
-            <span class="about-card-more">Learn more →</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="contact-section" id="list-your-business" aria-label="List your business">
-      <div class="container">
-        <h2 class="contact-heading">List Your Business</h2>
-        <p class="contact-intro">Got a business in the area? Fill out our quick form and we'll have you live within 24 hours — no fees, no catch.</p>
-        <p class="contact-learn-more">
-          <a href="how-we-add-business.html" class="card-link card-website-link">Learn how we add businesses →</a>
-        </p>
-        <div class="contact-buttons">
-          <a href="submit.html" class="contact-btn contact-btn-email">Submit Your Business</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>The Grove List · Southern Hillsborough County, Florida</p>
-      <p>Made with ❤️ in Southshore</p>
+      <p class="footer-verse">"Your word is a lamp to my feet and a light to my path." — Psalm 119:105</p>
+      <p class="footer-credit">Scripture provided by <a href="https://scripture.api.bible" class="footer-link" target="_blank" rel="noopener">API.Bible</a></p>
     </div>
   </footer>
-  <div class="site-footer-print">
-    <p>The Grove List — thegrovelist.com · Southern Hillsborough County, Florida</p>
-  </div>
 
-  <!-- Cookie consent banner -->
-  <div id="cookieBanner" class="cookie-banner hidden" role="dialog" aria-label="Cookie notice">
-    <p class="cookie-text">This site uses cookies for analytics (Google Analytics). By continuing, you agree to our use of cookies.</p>
-    <button id="cookieAccept" class="cookie-btn" type="button">Got it</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.js" integrity="sha384-tuevtT+97g9yLeuT/m52ejUJbc0hzsN6MPLiQEccySreiGjrcgk2tMBJR7/l6HGM" crossorigin="anonymous"></script>
-  <script src="app.js?v=14"></script>
+  <script src="app.js"></script>
 </body>
 </html>

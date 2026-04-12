@@ -3,57 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found | The Grove List</title>
+  <title>Page Not Found — Daily Scripture</title>
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7KXDMST12"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C7KXDMST12');
-  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    .error-page { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: var(--spacing-2xl) var(--spacing-lg); }
-    .error-content { text-align: center; }
-    .error-code { font-size: 4rem; color: var(--color-text-muted); margin-bottom: var(--spacing-sm); }
-    .error-message { margin-bottom: var(--spacing-lg); }
+    .error-page {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .error-code {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 5rem;
+      color: #c9a84c;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .error-heading {
+      font-size: 1.375rem;
+      margin-bottom: 0.75rem;
+    }
+    .error-sub {
+      color: #6b6259;
+      margin-bottom: 2rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 1.5rem;
+      background: #2c4a7c;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .back-link:hover { background: #1e3560; color: #fff; }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a href="index.html" style="color: inherit; text-decoration: none;">
-        <div class="header-logo-title">
-          <img src="orange.png" alt="orange grove icon" class="header-logo" width="210" height="140">
-          <h1 class="site-title">The Grove List</h1>
-        </div>
-      </a>
-      <p class="site-tagline">Your official guide to small businesses in Southshore</p>
-      <a href="index.html#list-your-business" class="header-cta">Add Your Business</a>
+      <div class="header-brand">
+        <span class="header-cross" aria-hidden="true">✝</span>
+        <h1 class="site-title">Daily Scripture</h1>
+      </div>
+      <p class="site-tagline">Your daily companion for God's Word</p>
     </div>
   </header>
 
-  <main class="main-content">
-    <section class="error-page">
-      <div class="container">
-        <div class="error-content">
-          <p class="error-code">404</p>
-          <h2 class="error-message">Page not found</h2>
-          <p style="color: var(--color-text-muted); margin-bottom: var(--spacing-lg);">The page you're looking for doesn't exist or has been moved.</p>
-          <a href="index.html" class="header-cta">Back to The Grove List</a>
-        </div>
+  <main>
+    <div class="error-page">
+      <div>
+        <p class="error-code">404</p>
+        <h2 class="error-heading">Page not found</h2>
+        <p class="error-sub">The page you're looking for doesn't exist or has been moved.</p>
+        <a href="/" class="back-link">Back to Daily Scripture</a>
       </div>
-    </section>
+    </div>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>The Grove List · Southern Hillsborough County, Florida</p>
-      <p>Made with ❤️ in Southshore</p>
+      <p class="footer-verse">"Your word is a lamp to my feet and a light to my path." — Psalm 119:105</p>
     </div>
   </footer>
 </body>

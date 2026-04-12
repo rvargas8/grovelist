@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "directory-site",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-p", "4321", "/Users/admin/Desktop/grovelist"],
-      "port": 4321
+      "name": "bible-site",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": ["-m", "http.server", "8768", "--directory", "/Users/admin/Desktop/grovelist"],
+      "port": 8768
     }
   ]
 }
