@@ -147,21 +147,12 @@ async function loadTranslations() {
   try {
     const data = await apiFetch('/bibles');
 
-    // Filter to English bibles
-    let bibles = data.data.filter(
-      (b) => b.language && (b.language.id === 'eng' || b.language.name === 'English')
-    );
+    // Only show licensed translations
+    const LICENSED = ['KJV', 'NIV', 'NLT'];
+    let bibles = data.data.filter((b) => LICENSED.includes(b.abbreviation));
 
-    // Sort: prioritize common translations first
-    const PRIORITY = ['KJV', 'KJVA', 'NIV', 'ESV', 'NKJV', 'NLT', 'NASB', 'ASV', 'WEB', 'YLT', 'MSG'];
-    bibles.sort((a, b) => {
-      const ai = PRIORITY.indexOf(a.abbreviation);
-      const bi = PRIORITY.indexOf(b.abbreviation);
-      if (ai === -1 && bi === -1) return a.name.localeCompare(b.name);
-      if (ai === -1) return 1;
-      if (bi === -1) return -1;
-      return ai - bi;
-    });
+    // Sort in preferred order: KJV, NIV, NLT
+    bibles.sort((a, b) => LICENSED.indexOf(a.abbreviation) - LICENSED.indexOf(b.abbreviation));
 
     select.innerHTML = '';
     for (const bible of bibles) {
