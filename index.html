@@ -25,12 +25,6 @@
         <h1 class="site-title">Daily Scripture</h1>
       </div>
       <p class="site-tagline">Your daily companion for God's Word</p>
-      <div class="translation-wrap">
-        <label for="translationSelect" class="translation-label">Translation</label>
-        <select id="translationSelect" class="translation-select" aria-label="Select Bible translation">
-          <option value="">Loading translations…</option>
-        </select>
-      </div>
     </div>
   </header>
 
@@ -39,7 +33,15 @@
     <!-- Verse of the Day -->
     <section class="votd-section" aria-label="Verse of the day">
       <div class="container">
-        <h2 class="section-title">Verse of the Day</h2>
+        <div class="votd-section-header">
+          <h2 class="section-title">Verse of the Day</h2>
+          <div class="translation-wrap">
+            <label for="translationSelect" class="translation-label">Translation</label>
+            <select id="translationSelect" class="translation-select" aria-label="Select Bible translation">
+              <option value="">Loading…</option>
+            </select>
+          </div>
+        </div>
         <div class="votd-card" id="votdCard">
           <div class="card-state" id="votdLoading" aria-live="polite">
             <span class="spinner" aria-hidden="true"></span>
