@@ -152,7 +152,9 @@ async function loadTranslations() {
     const LABELS = { engKJV: 'KJV — King James Version', NIV11: 'NIV — New International Version', NLT: 'NLT — New Living Translation' };
     let bibles = data.data.filter((b) => LICENSED.includes(b.abbreviation));
 
-    // Sort in preferred order: KJV, NIV, NLT
+    // Deduplicate by abbreviation, then sort in preferred order: KJV, NIV, NLT
+    const seen = new Set();
+    bibles = bibles.filter((b) => seen.has(b.abbreviation) ? false : seen.add(b.abbreviation));
     bibles.sort((a, b) => LICENSED.indexOf(a.abbreviation) - LICENSED.indexOf(b.abbreviation));
 
     select.innerHTML = '';
