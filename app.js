@@ -147,8 +147,9 @@ async function loadTranslations() {
   try {
     const data = await apiFetch('/bibles');
 
-    // Only show licensed translations
-    const LICENSED = ['KJV', 'NIV', 'NLT'];
+    // Only show licensed translations (abbreviations as returned by API.Bible)
+    const LICENSED = ['engKJV', 'NIV11', 'NLT'];
+    const LABELS = { engKJV: 'KJV — King James Version', NIV11: 'NIV — New International Version', NLT: 'NLT — New Living Translation' };
     let bibles = data.data.filter((b) => LICENSED.includes(b.abbreviation));
 
     // Sort in preferred order: KJV, NIV, NLT
@@ -158,7 +159,7 @@ async function loadTranslations() {
     for (const bible of bibles) {
       const opt = document.createElement('option');
       opt.value = bible.id;
-      opt.textContent = `${bible.abbreviation} — ${bible.name}`;
+      opt.textContent = LABELS[bible.abbreviation] || `${bible.abbreviation} — ${bible.name}`;
       select.appendChild(opt);
     }
 
